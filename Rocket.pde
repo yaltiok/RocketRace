@@ -8,24 +8,26 @@ class Rocket {
   PVector end;
 
   ArrayList<PVector> trail = new ArrayList();
-  
+
   int offset = 5;
   int cycle = 300;
   int count = 0;
   int finishCount = 1;
+  int crashPenaltyFactor = 10;
 
   boolean finished = false;
   boolean first = false;
-  
+  boolean crashed = false;
+
   float fitness;
   float[][] genes;
   float d;
   float maxVel = 4;
 
-  Rocket(PVector end) {
+  Rocket(PVector end,float mutationRate) {
     pos = start;
     this.end = end;
-    this.dna = new DNA(genes);
+    this.dna = new DNA(genes,mutationRate);
   }
 
   Rocket(DNA dna, PVector end) {
@@ -63,7 +65,7 @@ class Rocket {
       pos = start;
       count = 0;
     }
-    if (!finished) {
+    if (!finished && !crashed) {
       vel.add(acc);
       pos.add(vel);
       acc.mult(0);
@@ -74,11 +76,14 @@ class Rocket {
         trail.remove(0);
       }
       float d = dist(pos.x, pos.y, end.x, end.y);
-      if (d < 5) {
-        this.pos = end.copy();
-        d = 1;
+      if (d < 15) {
         finishCount = count;
         finished = true;
+      }
+      if (this.pos.x < 0 || this.pos.y < 0 ||
+        this.pos.x > width || this.pos.y > height) 
+      {
+        this.crashed = true;
       }
     }
   }
@@ -86,9 +91,16 @@ class Rocket {
   void calcFitness() {
     this.d = dist(pos.x, pos.y, end.x, end.y);
     if (!finished) {
-      this.fitness = 1/this.d;
+      if (crashed) {
+        this.fitness = 1/(this.d * this.crashPenaltyFactor);
+      } else {
+        this.fitness = 1/this.d;
+      }
     } else {
-      this.fitness = float(finishCount) + 1.0 / this.d;
+      if (finishCount == 0) {
+        finishCount = cycle - 1;
+      }
+      this.fitness = pow(float(cycle - finishCount), 2) / this.d;
     }
   }
 

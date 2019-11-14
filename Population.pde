@@ -12,12 +12,12 @@ class Population {
     this.end = end;
   }
 
-  Population(int population, PVector end) {
+  Population(int population, PVector end, float mutationRate) {
     this.population = population;
     this.end = end;
     this.rockets = new Rocket[population];
     for (int i = 0; i < population; i++) {
-      rockets[i] = new Rocket(end);
+      rockets[i] = new Rocket(end,mutationRate);
     }
   }
 
@@ -44,8 +44,18 @@ class Population {
     return newRockets;
   }
 
+  int findFinishers(Rocket[] rockets) {
+    int sum = 0;
+    for (int i = 0; i < rockets.length; i++) {
+      if(rockets[i].finished){
+        sum++; 
+      }
+    }
+    return sum;
+  }
+
   Rocket findFirst(Rocket[] rockets) {
-    Rocket temp = new Rocket(end);
+    Rocket temp = new Rocket(end, mutationRate);
     float closestDist = 9999999;
     for (int i = 0; i < rockets.length; i++) {
       float d = dist(rockets[i].pos.x, rockets[i].pos.y, end.x, end.y);
