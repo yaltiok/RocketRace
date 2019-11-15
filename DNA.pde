@@ -2,7 +2,7 @@ class DNA {
 
 
   float[][] genes;
-  int cycle = 300;
+  int cycle = 400;
   float mutationRate;
 
 
@@ -14,18 +14,17 @@ class DNA {
       this.genes = new float[cycle][3];
       for (int i = 0; i < cycle; i++) {
         for (int j = 0; j < 3; j++) {
-          this.genes[i][j] = random(-1, 1);
+          this.genes[i][j] = random(-2,2);
         }
       }
     }
   }
 
   void mutate() {
-
     for (int i = 0; i < this.genes.length; i++) {
       if (random(1) < this.mutationRate) {
         for (int j = 0; j < 3; j++) {
-          this.genes[i][j] = random(-1, 1);
+          this.genes[i][j] = random(-1,1);
         }
       }
     }

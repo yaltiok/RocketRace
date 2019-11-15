@@ -3,6 +3,7 @@ class Population {
   int population;
   PVector end;
   ArrayList<Rocket> matingPool = new ArrayList();
+  float totalAvgFit = 0;
 
 
 
@@ -17,7 +18,7 @@ class Population {
     this.end = end;
     this.rockets = new Rocket[population];
     for (int i = 0; i < population; i++) {
-      rockets[i] = new Rocket(end,mutationRate);
+      rockets[i] = new Rocket(end, mutationRate);
     }
   }
 
@@ -31,10 +32,11 @@ class Population {
   Rocket[] selection() {
     Rocket[] newRockets = new Rocket[population];
     for (int i = 0; i < population; i++) {
-      int index = floor(random(matingPool.size()));
-      int index2 = floor(random(matingPool.size()));
-      DNA parentA = matingPool.get(index).dna;
-      DNA parentB = matingPool.get(index2).dna;
+      int index = floor(random(this.matingPool.size()));
+      int index2 = floor(random(this.matingPool.size()));
+
+      DNA parentA = this.matingPool.get(index).dna;
+      DNA parentB = this.matingPool.get(index2).dna;
 
       DNA child = parentA.crossover(parentB);
 
@@ -47,8 +49,8 @@ class Population {
   int findFinishers(Rocket[] rockets) {
     int sum = 0;
     for (int i = 0; i < rockets.length; i++) {
-      if(rockets[i].finished){
-        sum++; 
+      if (rockets[i].finished) {
+        sum++;
       }
     }
     return sum;
@@ -76,6 +78,17 @@ class Population {
     return this.rockets;
   }
 
+  DNA pickOne() {
+    while (true) {
+      float r = random(totalAvgFit);
+      int index = floor(random(this.rockets.length));
+      float probability = this.rockets[index].fitness;
+      if (r < probability) {
+        return this.rockets[index].dna;
+      }
+    }
+  }
+
   void evaluate() {
     float maxFit = 0;
     for (int i = 0; i < rockets.length; i++) {
@@ -84,19 +97,27 @@ class Population {
         maxFit = rockets[i].fitness;
       }
     }
-    //println("-----------------------------------");
 
     for (int i = 0; i < rockets.length; i++) {
-      rockets[i].fitness = rockets[i].fitness / maxFit;
-      //println(rockets[i].fitness);
+      rockets[i].fitness /= maxFit;
+      this.totalAvgFit += rockets[i].fitness;
     }
-    //println(maxFit);
-    //println("-----------------------------------");
+
     for (int i = 0; i < rockets.length; i++) {
       int n = floor(rockets[i].fitness * 100);
       for (int j = 0; j < n; j++) {
-        matingPool.add(rockets[i]);
+        matingPool.add(this.rockets[i]);
       }
     }
+  }
+
+  boolean dead() {
+    int count = 0;
+    for (Rocket r : this.rockets) {
+      if (r.crashed || r.finished) {
+        count++;
+      }
+    }
+    return count == this.rockets.length;
   }
 }

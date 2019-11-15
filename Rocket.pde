@@ -10,7 +10,7 @@ class Rocket {
   ArrayList<PVector> trail = new ArrayList();
 
   int offset = 5;
-  int cycle = 300;
+  int cycle = 400;
   int count = 0;
   int finishCount = 1;
   int crashPenaltyFactor = 10;
@@ -24,10 +24,10 @@ class Rocket {
   float d;
   float maxVel = 4;
 
-  Rocket(PVector end,float mutationRate) {
+  Rocket(PVector end, float mutationRate) {
     pos = start;
     this.end = end;
-    this.dna = new DNA(genes,mutationRate);
+    this.dna = new DNA(genes, mutationRate);
   }
 
   Rocket(DNA dna, PVector end) {
@@ -40,6 +40,7 @@ class Rocket {
   void applyForce(float forceX, float forceY_1, float forceY_2) {
     float netForceY = forceY_1 - forceY_2;
     acc.add(forceX, netForceY, 0);
+    acc.limit(0.4);
   }
 
 
@@ -62,7 +63,6 @@ class Rocket {
     applyForce(dna.genes[count][0], dna.genes[count][1], dna.genes[count][2]);
     count++;
     if (count == cycle) {
-      pos = start;
       count = 0;
     }
     if (!finished && !crashed) {
@@ -71,12 +71,14 @@ class Rocket {
       acc.mult(0);
       vel.limit(maxVel);
       trail.add(new PVector(pos.x, pos.y));
-      drawTrail(trail.size());
-      if (trail.size() > 100) {
-        trail.remove(0);
+      if (this.first) {
+        drawTrail(trail.size());
       }
+      //if (trail.size() > 100) {
+      //  trail.remove(0);
+      //}
       float d = dist(pos.x, pos.y, end.x, end.y);
-      if (d < 15) {
+      if (d < 20) {
         finishCount = count;
         finished = true;
       }

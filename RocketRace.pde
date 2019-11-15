@@ -2,7 +2,7 @@ Rocket rocket;
 PVector end;
 Rocket[] rockets;
 int rocketCount = 25;
-int cycle = 300;
+int cycle = 400;
 int count = 0;
 int generationCount = 0;
 int finisherCount = 0;
@@ -43,7 +43,7 @@ void draw() {
   population.findFirst(this.rockets).first = true;
   finisherCount = population.findFinishers(this.rockets);
   count++;
-  if (count == cycle) {
+  if (count == cycle || population.dead()) {
     lastFinisherCount = 0;
     population.evaluate();
     this.rockets = population.selection();
