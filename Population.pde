@@ -61,7 +61,7 @@ class Population {
     float closestDist = 9999999;
     for (int i = 0; i < rockets.length; i++) {
       float d = dist(rockets[i].pos.x, rockets[i].pos.y, end.x, end.y);
-      if (d < closestDist) {
+      if (d < closestDist && !rockets[i].crashed) {
         closestDist = d;
         temp = rockets[i];
       }

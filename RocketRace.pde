@@ -7,7 +7,7 @@ int count = 0;
 int generationCount = 0;
 int finisherCount = 0;
 int lastFinisherCount = 0;
-float mutationRate = 0.04;
+float mutationRate = 0.01;
 
 ArrayList<Obstacle> obstacleList;
 
@@ -32,7 +32,7 @@ void draw() {
   push();
   strokeWeight(32);
   
-  text("Mutation Rate : " + "0.04%",50,35);
+  text("Mutation Rate : " + mutationRate + "%",50,35);
   text("Generation : " + generationCount, 50, 50);
   text("Lifespan : " + (cycle - count), 50, 65);
   text("Finishers : " + finisherCount, 50, 80);

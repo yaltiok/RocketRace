@@ -74,9 +74,6 @@ class Rocket {
       if (this.first) {
         drawTrail(trail.size());
       }
-      //if (trail.size() > 100) {
-      //  trail.remove(0);
-      //}
       float d = dist(pos.x, pos.y, end.x, end.y);
       if (d < 20) {
         finishCount = count;
@@ -102,7 +99,7 @@ class Rocket {
       if (finishCount == 0) {
         finishCount = cycle - 1;
       }
-      this.fitness = pow(float(cycle - finishCount), 2) / this.d;
+      this.fitness = pow(float(cycle - finishCount), 3) / this.d;
     }
   }
 
